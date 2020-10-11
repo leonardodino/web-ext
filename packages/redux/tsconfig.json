@@ -1,0 +1,11 @@
+{
+  "include": ["src"],
+  "compilerOptions": {
+    "strict": true,
+    "lib": ["ES2015", "ES2017.object", "DOM"],
+    "moduleResolution": "node",
+    "declaration": true,
+    "module": "ES6",
+    "outDir": "dist"
+  }
+}
