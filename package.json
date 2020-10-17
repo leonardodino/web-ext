@@ -4,6 +4,7 @@
     "packages/*"
   ],
   "scripts": {
+    "prepare": "yarn -s build",
     "format": "prettier --write . --ignore-path .gitignore",
     "build": "wsrun -ems build",
     "test": "wsrun -ems test",

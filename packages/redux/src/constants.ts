@@ -1,4 +1,3 @@
-export const name = '@web-ext/redux'
 export const reply = '@web-ext/redux – reply'
 export const thunk = '@web-ext/redux – thunk'
 export const dispatch = '@web-ext/redux – dispatch'

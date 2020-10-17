@@ -2,10 +2,10 @@
   "include": ["src"],
   "compilerOptions": {
     "strict": true,
-    "lib": ["ES2015", "ES2017.object", "DOM"],
     "moduleResolution": "node",
+    "isolatedModules": true,
     "declaration": true,
-    "module": "ES6",
+    "target": "es2018",
     "outDir": "dist"
   }
 }

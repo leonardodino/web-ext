@@ -5,7 +5,6 @@ import { createDispatchMessage, isNewStateMesssage } from './messages'
 import { isReplyMessage } from './messages/reply'
 import { isAwaiting } from './utils'
 
-type VoidFn = () => void
 type State<T extends {}> = { [connected]: false } | ({ [connected]: true } & T)
 type PromiseArgs = Parameters<ConstructorParameters<PromiseConstructor>[0]>
 
@@ -13,15 +12,15 @@ const $ = Symbol('foreground-store')
 const g = (self as any) as { [$]?: ForegroundStore<any, any> }
 
 // TODO: do fancy patch-magic here to keep references
-const applyStatePatch = <T>(oldState: State<T>, newState: State<T>): void => {
-  oldState = isAwaiting(oldState) ? newState : Object.assign(oldState, newState)
-  oldState[connected] = true
+const applyStatePatch = <T>(oldState: T | State<T>, newState: T): State<T> => {
+  return { ...newState, [connected]: true }
 }
 
 export class ForegroundStore<S = {}, A = any> {
+  static isAwaiting = isAwaiting
   private port?: Runtime.Port
   private dispatches = new Map<string, PromiseArgs>()
-  private listeners = new Set<VoidFn>()
+  private listeners = new Set<VoidFunction>()
   private state: State<S> = awaiting
 
   /** singleton */
@@ -37,7 +36,7 @@ export class ForegroundStore<S = {}, A = any> {
 
   private listener = (message: unknown): void => {
     if (isNewStateMesssage(message)) {
-      applyStatePatch(this.state, message.payload)
+      this.state = applyStatePatch(this.state, message.payload)
       return this.listeners.forEach((listener) => listener())
     }
     if (isReplyMessage(message)) {
@@ -50,7 +49,7 @@ export class ForegroundStore<S = {}, A = any> {
     }
   }
 
-  connect() {
+  connect = () => {
     if (!this.port) {
       this.port = browser.runtime.connect(undefined, { name })
       this.port.onMessage.addListener(this.listener)
@@ -60,7 +59,10 @@ export class ForegroundStore<S = {}, A = any> {
   }
 
   // redux store API (sans observable stuff)
-  async dispatch(action: A) {
+  dispatch = async (action: A) => {
+    if (typeof action === 'function') {
+      throw new Error('tried to dispatch a bare (non-exposed) thunk')
+    }
     // TODO: make A only JSON serializable stuff
     const dispatchId = nanoid()
     const promise = new Promise((resolve, reject) => {
@@ -72,16 +74,16 @@ export class ForegroundStore<S = {}, A = any> {
     return promise as Promise<A>
   }
 
-  getState() {
-    return this.state
+  getState = () => {
+    return this.state as S
   }
 
-  subscribe(listener: VoidFn) {
+  subscribe = (listener: VoidFunction): VoidFunction => {
     this.listeners.add(listener)
     return () => this.listeners.delete(listener)
   }
 
-  replaceReducer(_: unknown): void {
+  replaceReducer(_: unknown): never {
     throw new Error('replaceReducer is not supported on the foreground!')
   }
 }

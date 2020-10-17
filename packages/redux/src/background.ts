@@ -6,7 +6,6 @@ import {
   createNewStateMessage,
   createReplyMessage,
 } from './messages'
-import { name } from './constants'
 
 const foreign: unique symbol = Symbol('foreign')
 
@@ -31,7 +30,6 @@ export const exposeStore = (store: Store): void => {
   const dispatchListener = createDispatchListener(store)
 
   browser.runtime.onConnect.addListener((port) => {
-    if (port.name !== name) return
     port.onDisconnect.addListener(() => ports.delete(port))
     ports.add(port)
 
@@ -42,7 +40,8 @@ export const exposeStore = (store: Store): void => {
   store.subscribe(() => {
     // TODO: deep equality check
     const state = store.getState()
-    ports.forEach((port) => port.postMessage(createNewStateMessage(state)))
+    const message = createNewStateMessage(state)
+    ports.forEach((port) => port.postMessage(message))
   })
 }
 
@@ -60,6 +59,7 @@ export const createWebExtMiddleware = ({
   if (isProxyThunkAction(action)) {
     const thunk = registry[action.meta](...action.payload)
     return delayed(next(thunk as any))
+    // return delayed(thunk(store.dispatch, store.getState, undefined))
   }
 
   // delay out-of-background-page plain dispatches
