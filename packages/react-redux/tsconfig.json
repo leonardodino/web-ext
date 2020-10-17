@@ -1,0 +1,11 @@
+{
+  "include": ["src"],
+  "compilerOptions": {
+    "strict": true,
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "declaration": true,
+    "target": "es2018",
+    "outDir": "dist"
+  }
+}

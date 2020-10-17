@@ -8,6 +8,7 @@
     "format": "prettier --write . --ignore-path .gitignore",
     "build": "wsrun -ems build",
     "test": "wsrun -ems test",
+    "react-redux": "yarn workspace @web-ext/react-redux",
     "redux": "yarn workspace @web-ext/redux"
   },
   "engines": {
