@@ -11,6 +11,9 @@
   "scripts": {
     "build": "tsc"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "react-redux": "^7.2.1"
   },
