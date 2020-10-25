@@ -17,15 +17,6 @@
     "node": ">=12",
     "yarn": "1"
   },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,md,html,css,graphql}": "prettier --write"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "post-commit": "git update-index --again"
-    }
-  },
   "resolutions": {
     "typescript": "4.0.3"
   },
@@ -37,17 +28,5 @@
     "release-it-yarn-workspaces": "^1.5.0",
     "typescript": "^4.0.3",
     "wsrun": "^5.2.4"
-  },
-  "release-it": {
-    "plugins": {
-      "release-it-yarn-workspaces": true
-    },
-    "git": {
-      "commitMessage": ":bookmark: v${version}",
-      "requireBranch": "main",
-      "tagAnnotation": "v${version}",
-      "tagName": "v${version}"
-    },
-    "npm": false
   }
 }
