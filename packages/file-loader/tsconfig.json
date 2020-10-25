@@ -1,0 +1,11 @@
+{
+  "include": ["src"],
+  "compilerOptions": {
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": false,
+    "resolveJsonModule": true,
+    "module": "CommonJs",
+    "outDir": "dist"
+  }
+}
