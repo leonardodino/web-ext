@@ -10,6 +10,7 @@
     "build": "wsrun -ems build",
     "test": "wsrun -ems test",
     "release": "release-it",
+    "file-loader": "yarn workspace @web-ext/file-loader",
     "react-redux": "yarn workspace @web-ext/react-redux",
     "redux": "yarn workspace @web-ext/redux"
   },

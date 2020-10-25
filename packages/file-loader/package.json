@@ -1,0 +1,29 @@
+{
+  "name": "@web-ext/file-loader",
+  "version": "0.0.0-alpha.0",
+  "author": "Leonardo Dino",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "tsc"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "loader-utils": "^2.0.0",
+    "schema-utils": "^3.0.0"
+  },
+  "peerDependencies": {
+    "webpack": "^4.0.0 || ^5.0.0"
+  },
+  "devDependencies": {
+    "@types/loader-utils": "^2.0.1",
+    "@types/node": "^14.14.2",
+    "@types/webpack": "^4.41.23",
+    "typescript": "^4.0.3"
+  }
+}
