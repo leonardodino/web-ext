@@ -40,7 +40,12 @@
   },
   "release-it": {
     "plugins": {
-      "release-it-yarn-workspaces": true
+      "release-it-yarn-workspaces": {
+        "workspaces": [
+          "packages/react-redux",
+          "packages/redux"
+        ]
+      }
     },
     "git": {
       "commitMessage": ":bookmark: v${version}",
