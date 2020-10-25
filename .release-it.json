@@ -1,0 +1,14 @@
+{
+  "plugins": {
+    "release-it-yarn-workspaces": {
+      "workspaces": ["packages/react-redux", "packages/redux"]
+    }
+  },
+  "git": {
+    "commitMessage": ":bookmark: v${version}",
+    "requireBranch": "main",
+    "tagAnnotation": "v${version}",
+    "tagName": "v${version}"
+  },
+  "npm": false
+}
