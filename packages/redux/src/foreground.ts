@@ -6,6 +6,7 @@ import { isReplyMessage } from './messages/reply'
 import { isAwaiting } from './utils'
 import { ProxyThunkAction, isProxyThunkAction } from './thunks'
 import { AnyAction } from 'redux'
+import { createThenable } from './thenable'
 
 type State<T extends {}> = { [connected]: false } | ({ [connected]: true } & T)
 type PromiseArgs = Parameters<ConstructorParameters<PromiseConstructor>[0]>
@@ -63,7 +64,7 @@ export class ForegroundStore<S = {}> {
   // redux store API (sans observable stuff)
   dispatch<A extends ProxyThunkAction>(action: A): Promise<A['__return__']>
   dispatch<A extends AnyAction>(action: A): void
-  dispatch(action: ProxyThunkAction | AnyAction) {
+  dispatch(action: AnyAction | ProxyThunkAction) {
     if (typeof action === 'function') {
       throw new Error('tried to dispatch a bare (non-exposed) thunk')
     }
@@ -73,14 +74,11 @@ export class ForegroundStore<S = {}> {
       return
     }
 
-    // TODO: make A only JSON serializable stuff
-    const dispatchId = nanoid()
-    const promise = new Promise((resolve, reject) => {
-      this.dispatches.set(dispatchId, [resolve, reject])
+    return createThenable(({ tracked, resolve, reject }) => {
+      const dispatchId = tracked ? nanoid() : null
+      if (dispatchId) this.dispatches.set(dispatchId, [resolve, reject])
+      this.getPort().postMessage(createDispatchMessage(dispatchId, action))
     })
-    this.getPort().postMessage(createDispatchMessage(dispatchId, action))
-
-    return promise
   }
 
   getState = () => {
