@@ -1,5 +1,5 @@
 import { browser, Runtime } from 'webextension-polyfill-ts'
-import { nanoid } from 'nanoid'
+import { nanoid } from '@reduxjs/toolkit'
 import { connected, awaiting } from './constants'
 import { createDispatchMessage, isNewStateMesssage } from './messages'
 import { isReplyMessage } from './messages/reply'
@@ -63,7 +63,7 @@ export class ForegroundStore<S = {}> {
   // redux store API (sans observable stuff)
   dispatch<A extends ProxyThunkAction>(action: A): Promise<A['__return__']>
   dispatch<A extends AnyAction>(action: A): void
-  dispatch(action: AnyAction) {
+  dispatch(action: ProxyThunkAction | AnyAction) {
     if (typeof action === 'function') {
       throw new Error('tried to dispatch a bare (non-exposed) thunk')
     }
