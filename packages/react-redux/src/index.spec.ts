@@ -7,7 +7,8 @@ const { thunks } = exposeThunks({
 
 export const x = async () => {
   const dispatch = useDispatch()
-
-  const r = dispatch(thunks.format(1))
-  return r
+  const action = thunks.format(1)
+  const r1 = await dispatch(action)
+  const r2 = dispatch({ type: 'a' })
+  return r1
 }
