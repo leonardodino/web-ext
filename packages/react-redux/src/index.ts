@@ -1,17 +1,16 @@
 import type { FC } from 'react'
-import type { Action, AnyAction } from 'redux'
-import type { ForegroundStore } from '@web-ext/redux'
+import type { AnyAction } from 'redux'
+import type { ForegroundStore, ProxyThunkAction } from '@web-ext/redux'
 import { Provider, useDispatch, useSelector } from 'react-redux'
 
-export type AsyncDispatch<A extends Action = AnyAction> = (
-  action: A,
-) => Promise<A>
+interface ProxyDispatch {
+  /** returns a promise of a proxy thunk */
+  <A extends ProxyThunkAction>(action: A): Promise<A['__return__']>
+  /** returns nothing for non-thunk actions */
+  (action: AnyAction): void
+}
 
-export type ForegroundDispatchHook = <
-  A extends Action = AnyAction
->() => AsyncDispatch<A>
-
-const useForegroundDispatch = useDispatch as ForegroundDispatchHook
+const useForegroundDispatch: () => ProxyDispatch = useDispatch
 
 const BackgroundProvider = (Provider as any) as FC<{ store: ForegroundStore }>
 
