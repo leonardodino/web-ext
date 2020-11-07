@@ -1,6 +1,6 @@
 {
   "name": "@web-ext/redux",
-  "version": "0.0.0-alpha.2",
+  "version": "0.0.0-alpha.3",
   "author": "Leonardo Dino",
   "license": "MIT",
   "type": "module",
