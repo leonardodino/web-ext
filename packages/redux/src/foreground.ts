@@ -1,22 +1,25 @@
 import { browser, Runtime } from 'webextension-polyfill-ts'
-import { nanoid } from 'nanoid'
+import { nanoid } from '@reduxjs/toolkit'
 import { connected, awaiting } from './constants'
 import { createDispatchMessage, isNewStateMesssage } from './messages'
 import { isReplyMessage } from './messages/reply'
 import { isAwaiting } from './utils'
+import { ProxyThunkAction, isProxyThunkAction } from './thunks'
+import { AnyAction } from 'redux'
+import { createThenable } from './thenable'
 
 type State<T extends {}> = { [connected]: false } | ({ [connected]: true } & T)
 type PromiseArgs = Parameters<ConstructorParameters<PromiseConstructor>[0]>
 
 const $ = Symbol('foreground-store')
-const g = (self as any) as { [$]?: ForegroundStore<any, any> }
+const g = (self as any) as { [$]?: ForegroundStore<any> }
 
 // TODO: do fancy patch-magic here to keep references
 const applyStatePatch = <T>(oldState: T | State<T>, newState: T): State<T> => {
   return { ...newState, [connected]: true }
 }
 
-export class ForegroundStore<S = {}, A = any> {
+export class ForegroundStore<S = {}> {
   static isAwaiting = isAwaiting
   private port?: Runtime.Port
   private dispatches = new Map<string, PromiseArgs>()
@@ -59,19 +62,23 @@ export class ForegroundStore<S = {}, A = any> {
   }
 
   // redux store API (sans observable stuff)
-  dispatch = async (action: A) => {
+  dispatch<A extends ProxyThunkAction>(action: A): Promise<A['__return__']>
+  dispatch<A extends AnyAction>(action: A): void
+  dispatch(action: AnyAction | ProxyThunkAction) {
     if (typeof action === 'function') {
       throw new Error('tried to dispatch a bare (non-exposed) thunk')
     }
-    // TODO: make A only JSON serializable stuff
-    const dispatchId = nanoid()
-    const promise = new Promise((resolve, reject) => {
-      this.dispatches.set(dispatchId, [resolve, reject])
-    })
-    this.getPort().postMessage(createDispatchMessage(dispatchId, action))
 
-    // TODO: unwrap the return of wrapped-thunks
-    return promise as Promise<A>
+    if (!isProxyThunkAction(action)) {
+      this.getPort().postMessage(createDispatchMessage(null, action))
+      return
+    }
+
+    return createThenable(({ tracked, resolve, reject }) => {
+      const dispatchId = tracked ? nanoid() : null
+      if (dispatchId) this.dispatches.set(dispatchId, [resolve, reject])
+      this.getPort().postMessage(createDispatchMessage(dispatchId, action))
+    })
   }
 
   getState = () => {
