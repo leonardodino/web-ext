@@ -68,7 +68,11 @@ export class ForegroundStore<S = {}, A = any> {
     const promise = new Promise((resolve, reject) => {
       this.dispatches.set(dispatchId, [resolve, reject])
     })
-    this.getPort().postMessage(createDispatchMessage(dispatchId, action))
+    try {
+      this.getPort().postMessage(createDispatchMessage(dispatchId, action))
+    } catch {
+      /* swallow: Extension context invalidated. */
+    }
 
     // TODO: unwrap the return of wrapped-thunks
     return promise as Promise<A>
