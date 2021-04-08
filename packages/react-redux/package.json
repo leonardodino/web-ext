@@ -1,6 +1,6 @@
 {
   "name": "@web-ext/react-redux",
-  "version": "0.0.0-alpha.3",
+  "version": "0.0.0-alpha.5",
   "author": "Leonardo Dino",
   "license": "MIT",
   "type": "module",
@@ -20,14 +20,14 @@
   "peerDependencies": {
     "@types/react": ">=16.9",
     "@types/react-redux": ">=7",
-    "@web-ext/redux": "0.0.0-alpha.3",
+    "@web-ext/redux": "0.0.0-alpha.5",
     "react": ">=16.9",
     "redux": ">=4"
   },
   "devDependencies": {
     "@types/react": "^16.9.53",
     "@types/react-redux": "^7.1.9",
-    "@web-ext/redux": "0.0.0-alpha.3",
+    "@web-ext/redux": "0.0.0-alpha.5",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "redux": "^4.0.5",
