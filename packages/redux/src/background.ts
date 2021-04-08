@@ -21,7 +21,7 @@ const createDispatchListener = (store: Store) => async (
   } catch (e) {
     result = e instanceof Error ? e : new Error(e?.message || e)
   } finally {
-    if (message.meta) port.postMessage(createReplyMessage(message.meta, result))
+    port.postMessage(createReplyMessage(message.meta, result))
   }
 }
 

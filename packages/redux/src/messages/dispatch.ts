@@ -2,12 +2,12 @@ import { dispatch } from '../constants'
 
 type WrappedAction<A extends any = any> = {
   type: typeof dispatch
-  meta: string | null
+  meta: string
   payload: A
 }
 
 export const createDispatchMessage = <A extends any>(
-  dispatchId: string | null,
+  dispatchId: string,
   action: A,
 ): WrappedAction<A> => ({
   type: dispatch,
