@@ -20,11 +20,8 @@ const createDispatchListener = (store: Store) => async (
     result = await store.dispatch(message.payload)
   } catch (e) {
     result = e instanceof Error ? e : new Error(e?.message || e)
-  }
-  try {
+  } finally {
     port.postMessage(createReplyMessage(message.meta, result))
-  } catch {
-    /* swallow: Attempting to use a disconnected port object */
   }
 }
 
