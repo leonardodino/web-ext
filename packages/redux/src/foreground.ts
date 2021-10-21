@@ -49,9 +49,9 @@ export class ForegroundStore<S = {}, A = any> {
     }
   }
 
-  connect = () => {
+  connect = (extensionId?: string, name?: string) => {
     if (!this.port) {
-      this.port = browser.runtime.connect(undefined, { name })
+      this.port = browser.runtime.connect(extensionId, { name })
       this.port.onMessage.addListener(this.listener)
     }
 
